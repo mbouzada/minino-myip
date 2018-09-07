@@ -1,0 +1,72 @@
+#!/bin/bash
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>
+
+# (c) Antonio Sánchez León <introlinux[fix@]gmail[fix.]com>
+# (c) Miguel Anxo Bouzada <mbouzada[fix@]gmail[fix.]com>
+# (c) GALPon MinNo Team <minino[fix@]galpon[fix.]org>
+# july 2012
+
+## -
+
+DIRICON="/usr/local/share/icons"
+
+FIJA=`cat /proc/net/dev | cut -f1 -d: | grep eth`
+WIFI1=`cat /proc/net/dev | cut -f1 -d: | grep wlan`
+WIFI2=`cat /proc/net/dev | cut -f1 -d: | grep ath`
+WIFI3=`cat /proc/net/dev | cut -f1 -d: | grep ra`
+
+AAA=`/sbin/ifconfig $FIJA | grep 'inet ' | awk '{print $2}' | sed "s/addr://"`
+BBB=`/sbin/ifconfig $WIFI1 | grep 'inet ' | awk '{print $2}' | sed "s/addr://"`
+CCC=`/sbin/ifconfig $WIFI2 | grep 'inet ' | awk '{print $2}' | sed "s/addr://"`
+DDD=`/sbin/ifconfig $WIFI3 | grep 'inet ' | awk '{print $2}' | sed "s/addr://"`
+
+if [ $AAA != "" ]; then
+	IPLOCAL=$AAA
+elif [ $BBB != "" ]; then
+	IPLOCAL=$BBB
+elif [ $CCC != "" ]; then
+	IPLOCAL=$CCC
+elif [ $DDD != "" ]; then
+	IPLOCAL=$DDD
+fi
+
+case $LANG in
+    ca*) MSG1="La seva IP <b>pública</b> és:"
+	 MSG2="La seva IP <b>local</b> és:"
+	 MSG3="La meva IP";;
+    es*) MSG1="Su IP <b>pública</b> es:"
+	 MSG2="Su IP <b>local</b> es:"
+	 MSG3="Mi IP";;
+    gl*) MSG1="O seu IP <b>público</b> é:"
+	 MSG2="O seu IP <b>local</b> é:"
+	 MSG3="O meu IP";;
+    *)   MSG1="Your <b>public</b> IP is:"
+	 MSG2="Your <b>local</b> IP is:"
+	 MSG3="My IP";;
+esac    
+
+IPPUBLICA=$(wget -q -O - checkip.dyndns.org | sed -e 's/.*Current IP Address: //' -e 's/<.*$//')
+# OUTRA OPCIÓN
+# IPPUBLICA=$(wget http://www.whatismyip.com/automation/n09230945.asp -O - 2> /dev/null; echo)
+
+if [ $IPPUBLICA = $IPLOCAL ]; then
+	yad --window-icon $DIRICON/myip_72.png --title "$MSG3" --button gtk-close \
+	    --image $DIRICON/myip_72.png \
+	    --text="  $MSG1\n\n<big><b>       $IPPUBLICA  </b></big>"
+else
+	yad --window-icon $DIRICON/myip_72.png --title "$MSG3" --button gtk-close \
+	    --image $DIRICON/myip_72.png \
+	    --text="  $MSG1\n<big><b>       $IPPUBLICA  </b></big>\n\n  $MSG2\n<big><b>       $IPLOCAL  </b></big>"
+fi
