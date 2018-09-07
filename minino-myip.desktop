@@ -1,0 +1,18 @@
+[Desktop Entry]
+Name=My IP
+Name[ca]=La meva IP
+Name[es]=Mi IP
+Name[gl]=O meu IP
+GenericName=My IP
+GenericName[ca]=La meva IP
+GenericName[es]=Mi IP
+GenericName[gl]=O meu IP
+Comment=View your IP public and Local, if exist.
+Comment[ca]=Vegi quines són les seves IP, pública i local, si existeix.
+Comment[es]=Vea cuales son sus IP, pública y local, si existe. 
+Comment[gl]=Vexa cales son os seus IP, público e local, se existe. 
+Exec=minino-myip
+Icon=myip
+Terminal=false
+Type=Application
+Categories=Application;Network;
